@@ -1,16 +1,18 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
     public int maxHealth = 3;
     public int health;
-
+    
     public GameObject damageEffect;
     public GameObject destroyEffect;
 
     void Start()
     {
         if(health == 0)health = maxHealth;
+        
     }
 
     public void Damage(int value)
@@ -25,11 +27,14 @@ public class Health : MonoBehaviour
         {
             Destroy();
         }
+
     }
 
     public void Destroy()
     {
-        if( destroyEffect != null ) Instantiate( destroyEffect, transform.position, transform.rotation );
+        if( destroyEffect != null && !gameObject.CompareTag("Player")) Instantiate( destroyEffect, transform.position, transform.rotation );
         Destroy( gameObject );
+
     }
+    
 }

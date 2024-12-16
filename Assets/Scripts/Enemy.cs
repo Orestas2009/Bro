@@ -9,21 +9,37 @@ public class ExampleClass : MonoBehaviour
     AudioSource audioSource;
     public GameObject bulletPrefab;
     public float pitchRange = 0.1f;
-    private void Update()
+    public float fireInterval = 0.5f;
+    public float fireCooldown;
+    public bool Aim;
+
+    private int index = 0;
+
+    void Start()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, PlayerDistance, PlayerLayer);
+        audioSource = GetComponent<AudioSource>();
+    }
+    void Update()
+    {
         
-        if (hit.collider.gameObject.CompareTag("Player"))
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, PlayerDistance, PlayerLayer);
+        if(hit.collider != null)
         {
-            Shoot();
+            if(hit.collider.gameObject.CompareTag("Player") && fireCooldown <= 0)
+            {
+                print("hit");
+                Shoot();
+                fireCooldown = fireInterval;
+            }
+            fireCooldown -= Time.deltaTime;
         }
+        
     }
     void Shoot()
     {
 
         GameObject obj = Instantiate(bulletPrefab, transform.position + transform.right, transform.rotation);
         obj.GetComponent<Bullet>().owner = gameObject;
-
         audioSource.pitch = Random.Range(1 - pitchRange, 1 + pitchRange);
         audioSource.PlayOneShot(audioSource.clip);
     }
